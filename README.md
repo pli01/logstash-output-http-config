@@ -87,11 +87,12 @@ networks:
 
 ## Option 2: Configure logstash to send to local ssh tunnel/elasticsearch
 
-## Configure ssh tunnel to SCALINGO_ELASTICSEARCH_URL (scalingo db-tunnel)
-This command will open an ssh tunnel from local port 10000 to your hidden elasticsearch DB
+- open ssh tunnel to SCALINGO_ELASTICSEARCH_URL with `scalingo db-tunnel`
+- configure logstash to send output to ssh tunner / elastic
 
+The following command will open an ssh tunnel from local port 10000 to your hidden elasticsearch DB.
 ```
-# https://localhost:10000 <- SSH -> SCALINGO_ELASTICSEARCH_URL
+# open https://localhost:10000 <- SSH -> SCALINGO_ELASTICSEARCH_URL
 scalingo -a $SCALINGO_APP db-tunnel -i $HOME/.ssh/scalingo-key SCALINGO_ELASTICSEARCH_URL
 ```
 
@@ -104,8 +105,9 @@ curl "https://$ELASTICSEARCH_USER:$ELASTICSEARCH_PASSWORD@localhost:10000/_cat/i
 ```
 # .env
 ELASTICSEARCH_HOST=your_local_ip:10000
-ELASTICSEARCH_USER=
-ELASTICSEARCH_PASSWORD=
+ELASTICSEARCH_USER=_REPLACE_HERE_
+ELASTICSEARCH_PASSWORD=_REPLACE_HERE_
+
 ```
 
 ### Start logstash docker-compose
