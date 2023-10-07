@@ -1,0 +1,14 @@
+logging.level: info
+filebeat.modules:
+  - module: nginx
+    ingress_controller:
+      enable: false
+    error:
+      enable: false
+    access:
+      enable: true
+      var.paths: [ "/logs/access.log" ]
+output:
+  logstash:
+    enabled: true
+    hosts: [ "logstash:5044" ]

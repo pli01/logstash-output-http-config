@@ -1,0 +1,44 @@
+#
+#  sample filebeat/logstash config
+#    filebeat:
+#       - read file logs/access.log
+#       - send to local logstah
+#    logstsash:
+#       - listen on logstash port
+#       - send to http endpoint
+#
+version: '3'
+services:
+  filebeat:
+    image: docker.elastic.co/beats/filebeat:${KIBANA_VERSION:-7.17.13}
+    volumes:
+      - ./filebeat/filebeat.yml:/usr/share/filebeat/filebeat.yml:ro
+      # logs dirs
+      - ./logs/:/logs/:ro
+    # disable strict permission checks
+    command: ["--strict.perms=false"]
+    networks:
+      - elk
+
+  logstash:
+    image: docker.elastic.co/logstash/logstash:${LOGSTASH_VERSION:-7.17.3}
+    volumes:
+      - ./logstash/pipeline/logstash.conf:/usr/share/logstash/pipeline/logstash-filebeat.conf:ro
+      - ./logstash/config/logstash.yml:/usr/share/logstash/config/logstash.yml:ro
+    environment:
+      #
+      # send to http endpoint
+      #
+      LOGSTASH_URL: ${LOGSTASH_URL:-}
+      LOGSTASH_USER: ${LOGSTASH_USER:-}
+      LOGSTASH_PASSWORD: ${LOGSTASH_PASSWORD:-}
+    networks:
+      - elk
+    depends_on:
+      - filebeat
+
+networks:
+  elk:
+    driver: bridge
+
+
